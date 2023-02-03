@@ -9,49 +9,46 @@
 using namespace std;
 
 vector<string> ans;
-bool exist;
 
 struct Node {
-	int val;
-	shared_ptr<Node> left;
-	shared_ptr<Node> right;
-	Node() : val(0), left(nullptr), right(nullptr) {}
-	Node(int x) : val(x), left(nullptr), right(nullptr) {}
-	Node(int x, shared_ptr<Node> left, shared_ptr<Node> right) : val(x), left(left), right(right) {}
+    int val;
+    shared_ptr<Node> left;
+    shared_ptr<Node> right;
+    Node() : val(0), left(nullptr), right(nullptr) {}
+    Node(int x) : val(x), left(nullptr), right(nullptr) {}
+    Node(int x, shared_ptr<Node> left, shared_ptr<Node> right) : val(x), left(left), right(right) {}
 };
 
 shared_ptr<Node> insert(shared_ptr<Node> root, int val) {
-	if (root == nullptr) {
-		return make_shared<Node>(val);
-	}
-    if (root->val==val) {
-        exist = true;
+    if (root == nullptr) {
+        return make_shared<Node>(val);
     }
-	if (val > (root->val)) {
-		root->right = insert(root->right, val);
-	}
-	else if (val<(root->val)) {
-		root->left = insert(root->left, val);
-	}
-	return root;
+    if (val > (root->val)) {
+        root->right = insert(root->right, val);
+    }
+    else if (val < (root->val)) {
+        root->left = insert(root->left, val);
+    }
+    return root;
 }
 
 bool find(shared_ptr<Node> root, int val) {
-    if (root==nullptr) {
+    if (root == nullptr) {
         return false;
     }
-    if (root->val==val) {
+    if (root->val == val) {
         return true;
     }
-    if (val<root->val) {
+    if (val < root->val) {
         return find(root->left, val);
-    } else {
+    }
+    else {
         return find(root->right, val);
     }
 }
 
 void traversal(shared_ptr<Node> root, int level) {
-    if (root==nullptr) {
+    if (root == nullptr) {
         return;
     }
     ++level;
@@ -72,33 +69,33 @@ int main() {
         stringstream ss(s);
         string action;
         ss >> action;
-        if (action=="ADD") {
+        if (action == "ADD") {
             int value;
             ss >> value;
-            exist = false;
-            shared_ptr<Node> current = insert(root, value);
-            if (root==nullptr) {
-                root = current;
-                ans.push_back("DONE");
-            } else if (exist) {
+            if (find(root, value)) {
                 ans.push_back("ALREADY");
             } else {
+                shared_ptr<Node> current = insert(root, value);
+                if (root == nullptr) {
+                    root = current;
+                }
                 ans.push_back("DONE");
             }
-        } else if (action=="SEARCH") {
+        } else if (action == "SEARCH") {
             int value;
             ss >> value;
             if (find(root, value)) {
                 ans.push_back("YES");
-            } else {
+            }
+            else {
                 ans.push_back("NO");
             }
-        } else if (action=="PRINTTREE") {
+        } else if (action == "PRINTTREE") {
             traversal(root, 0);
         }
     }
-    for (const auto& e: ans) {
+    for (const auto& e : ans) {
         cout << e << '\n';
     }
-	return 0;
+    return 0;
 }
